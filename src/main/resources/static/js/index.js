@@ -51,7 +51,7 @@ function isValidPassword(password) {
 
 // 수정 버튼을 눌렀을 때, 기존 작성 내용을 textarea 에 전달합니다.
 // 숨길 버튼을 숨기고, 나타낼 버튼을 나타냅니다.
-function editPost(id) {
+function editSchedule(id) {
     showEdits(id);
     let contents = $(`#${id}-contents`).text().trim();
     $(`#${id}-textarea`).val(contents);
@@ -61,9 +61,14 @@ function showEdits(id) {
     $(`#${id}-editarea`).show();
     $(`#${id}-submit`).show();
     $(`#${id}-delete`).show();
+    $(`#${id}-editTitle`).show();
+    $(`#${id}-editWriter`).show();
+    $(`#${id}-editPassword`).show();
 
     $(`#${id}-contents`).hide();
     $(`#${id}-edit`).hide();
+    $(`#${id}-title`).hide();
+    $(`#${id}-writer`).hide();
 }
 
 $(document).ready(function () {
@@ -127,11 +132,13 @@ function addHTML(id, title, content, writer, modifiedAt) {
                     <div id="${id}-title" class="title">
                         ${title}
                     </div>
+                    <input type="text" value="${title}" id="${id}-editTitle" style="display: none">
                 </div>
                 <div class="metadata">
                     <div id="${id}-writer" class="writer">
                         <span>담당자 : </span>${writer}
                     </div>
+                    <input type="text" value="${writer}" id="${id}-editWriter" style="display: none">
                     <div class="date">
                         <span>수정 : </span>${modifiedAt}
                     </div>
@@ -145,9 +152,10 @@ function addHTML(id, title, content, writer, modifiedAt) {
                         <textarea id="${id}-textarea" class="te-edit" name="" id="" cols="30" rows="5"></textarea>
                     </div>
                 </div>
+                <input type="text" id="${id}-editPassword" style="display: none" placeholder="비밀번호를 입력하세요.">
                 <!-- 버튼 영역-->
                 <div class="footer">
-                    <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
+                    <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editSchedule('${id}')">
                     <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
                     <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
                 </div>
@@ -199,26 +207,39 @@ function writeSchedule() {
 // 메모를 수정합니다.
 function submitEdit(id) {
     // 1. 작성 대상 메모의 username과 contents 를 확인합니다.
-    let username = $(`#${id}-username`).text().trim();
-    let contents = $(`#${id}-textarea`).val().trim();
+    let title = $(`#${id}-editTitle`).val();
+    let writer = $(`#${id}-editWriter`).val();
+    let password = $(`#${id}-editPassword`).val();
+    let content = $(`#${id}-textarea`).val();
 
     // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
-    if (isValidContents(contents) == false) {
+    if (isValidTitle(title) == false) {
+        return;
+    }
+    if (isValidWriter(writer) == false) {
+        return;
+    }
+    if (isValidPassword(password) == false) {
+        return;
+    }
+    if (isValidContent(content) == false) {
         return;
     }
 
     // 3. 전달할 data JSON으로 만듭니다.
-    let data = {'username': username, 'contents': contents};
+    let data = {'title': title, 'writer': writer, 'content': content, 'password': password};
 
     // 4. PUT /api/memos/{id} 에 data를 전달합니다.
     $.ajax({
         type: "PUT",
-        url: `/api/memos/${id}`,
+        url: `/api/schedules/${id}`,
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
-            alert('메시지 변경에 성공하였습니다.');
+            alert('일정 변경에 성공하였습니다.');
             window.location.reload();
+        },error: function (request, status, error) {
+            alert("code: " + request.status + "\n" + "error: " + error);
         }
     });
 }
