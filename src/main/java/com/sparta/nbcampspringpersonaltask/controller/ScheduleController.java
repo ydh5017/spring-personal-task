@@ -3,6 +3,8 @@ package com.sparta.nbcampspringpersonaltask.controller;
 import com.sparta.nbcampspringpersonaltask.Entity.Schedule;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
+import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
+import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
 import com.sparta.nbcampspringpersonaltask.service.ScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -40,5 +42,10 @@ public class ScheduleController {
     @PutMapping("/schedules/{id}")
     public Long updateSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         return scheduleService.updateSchedule(id, requestDto);
+    }
+
+    @GetMapping("/exception/test")
+    public String testException() {
+        throw new ScheduleException(ErrorCode.INVALID_PASSWORD);
     }
 }

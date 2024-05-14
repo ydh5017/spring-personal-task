@@ -239,7 +239,11 @@ function submitEdit(id) {
             alert('일정 변경에 성공하였습니다.');
             window.location.reload();
         },error: function (request, status, error) {
-            alert("code: " + request.status + "\n" + "error: " + error);
+            if (request.status == '401') {
+                alert("비밀번호가 일치하지 않습니다.");
+            }else {
+                alert("code: " + request.status + "\n" + "error: " + error);
+            }
         }
     });
 }
