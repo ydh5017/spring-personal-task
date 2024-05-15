@@ -6,7 +6,6 @@ import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
 import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
 import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
 import com.sparta.nbcampspringpersonaltask.repository.ScheduleRepository;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

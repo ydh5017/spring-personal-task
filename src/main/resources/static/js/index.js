@@ -1,53 +1,3 @@
-// 사용자가 내용을 올바르게 입력하였는지 확인합니다.
-function isValidContent(content) {
-    if (content == '') {
-        alert('내용을 입력해주세요');
-        return false;
-    }
-    if (content.trim().length > 140) {
-        alert('공백 포함 140자 이하로 입력해주세요');
-        return false;
-    }
-    return true;
-}
-
-function isValidTitle(title) {
-    if (title == '') {
-        alert('제목을 입력해주세요');
-        return false;
-    }
-    if (title.trim().length > 20) {
-        alert('공백 포함 20자 이하로 입력해주세요');
-        return false;
-    }
-    return true;
-}
-
-function isValidWriter(writer) {
-    if (writer == '') {
-        alert('담당자를 입력해주세요');
-        return false;
-    }
-    if (writer.trim().length > 10) {
-        alert('공백 포함 10자 이하로 입력해주세요');
-        return false;
-    }
-    return true;
-}
-
-function isValidPassword(password) {
-    var passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,16}$/;
-
-    if (password == '') {
-        alert('비밀번호를 입력해주세요');
-        return false;
-    }
-    if (!passwordRegex.test(password)) {
-        alert('비밀번호는 최소 8자에서 16자까지, 영문자, 숫자 및 특수 문자를 포함해야 합니다.');
-        return false;
-    }
-    return true;
-}
 
 // 수정 버튼을 눌렀을 때, 기존 작성 내용을 textarea 에 전달합니다.
 // 숨길 버튼을 숨기고, 나타낼 버튼을 나타냅니다.
@@ -172,19 +122,6 @@ function writeSchedule() {
     let password = $('#password').val();
     let content = $('#content').val();
 
-    if (isValidTitle(title) == false) {
-        return;
-    }
-    if (isValidWriter(writer) == false) {
-        return;
-    }
-    if (isValidPassword(password) == false) {
-        return;
-    }
-    if (isValidContent(content) == false) {
-        return;
-    }
-
     let data = {'title': title, 'content': content, 'writer': writer, 'password': password};
 
     $.ajax({
@@ -208,19 +145,6 @@ function submitEdit(id) {
     let writer = $(`#${id}-editWriter`).val();
     let password = $(`#${id}-editPassword`).val();
     let content = $(`#${id}-textarea`).val();
-
-    if (isValidTitle(title) == false) {
-        return;
-    }
-    if (isValidWriter(writer) == false) {
-        return;
-    }
-    if (isValidPassword(password) == false) {
-        return;
-    }
-    if (isValidContent(content) == false) {
-        return;
-    }
 
     // 3. 전달할 data JSON으로 만듭니다.
     let data = {'title': title, 'writer': writer, 'content': content, 'password': password};
@@ -249,9 +173,7 @@ function submitDelete(id) {
 
 function deleteOne(id) {
     let password = $(`#${id}-editPassword`).val();
-    if (isValidPassword(password) == false) {
-        return;
-    }
+
     let data = {'password': password};
     $.ajax({
         type: "DELETE",

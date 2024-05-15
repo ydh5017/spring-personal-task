@@ -20,4 +20,9 @@ public class ExceptionDto {
         this.errorCode = errorCode;
         this.message = message;
     }
+
+    public ExceptionDto(String message) {
+        this.result = "ERROR";
+        this.message = message;
+    }
 }
