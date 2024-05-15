@@ -76,11 +76,11 @@ $(document).ready(function () {
     getSchedule();
 })
 
-// 메모를 불러와서 보여줍니다.
+
 function getSchedule() {
-    // 1. 기존 메모 내용을 지웁니다.
+
     $('#cards-box').empty();
-    // 2. 메모 목록을 불러와서 HTML로 붙입니다.
+
     $.ajax({
         type: 'GET',
         url: '/api/schedules',
@@ -94,15 +94,17 @@ function getSchedule() {
                 let modifiedAt = message['modifiedAt'];
                 addHTML(id, title, content, writer, modifiedAt);
             }
+        },error: err => {
+            alert(err.responseJSON.message);
         }
     })
 }
 
 function findByKeyword() {
     let keyword = $('#keyword').val();
-    // 1. 기존 메모 내용을 지웁니다.
+
     $('#cards-box').empty();
-    // 2. 메모 목록을 불러와서 HTML로 붙입니다.
+
     $.ajax({
         type: 'GET',
         url: '/api/schedules/contents',
@@ -117,13 +119,12 @@ function findByKeyword() {
                 let modifiedAt = message['modifiedAt'];
                 addHTML(id, title, content, writer, modifiedAt);
             }
-        },error: function (request, status, error) {
-            alert("code: " + request.status + "\n" + "error: " + error);
+        },error: err => {
+            alert(err.responseJSON.message);
         }
     })
 }
 
-// 메모 하나를 HTML로 만들어서 body 태그 내 원하는 곳에 붙입니다.
 function addHTML(id, title, content, writer, modifiedAt) {
     // 1. HTML 태그를 만듭니다.
     let tempHtml = `<div class="card">
@@ -156,22 +157,21 @@ function addHTML(id, title, content, writer, modifiedAt) {
                 <!-- 버튼 영역-->
                 <div class="footer">
                     <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editSchedule('${id}')">
-                    <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
+                    <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="submitDelete('${id}')">
                     <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
+                    <img id="${id}-submitDelete" class="icon-end-edit" src="images/done.png" alt="" onclick="deleteOne('${id}')">
                 </div>
             </div>`;
     // 2. #cards-box 에 HTML을 붙인다.
     $('#cards-box').append(tempHtml);
 }
 
-// 메모를 생성합니다.
 function writeSchedule() {
     let title = $('#title').val();
     let writer = $('#writer').val();
     let password = $('#password').val();
     let content = $('#content').val();
 
-    // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
     if (isValidTitle(title) == false) {
         return;
     }
@@ -185,10 +185,8 @@ function writeSchedule() {
         return;
     }
 
-    // 4. 전달할 data JSON으로 만듭니다.
     let data = {'title': title, 'content': content, 'writer': writer, 'password': password};
 
-    // 5. POST /api/memos 에 data를 전달합니다.
     $.ajax({
         type: "POST",
         url: "/api/schedules",
@@ -198,13 +196,12 @@ function writeSchedule() {
             alert('일정이 성공적으로 작성되었습니다.');
             window.location.reload();
         },
-        error: function (request, status, error) {
-            alert("code: " + request.status + "\n" + "error: " + error);
+        error: err => {
+        alert(err.responseJSON.message);
         }
     });
 }
 
-// 메모를 수정합니다.
 function submitEdit(id) {
     // 1. 작성 대상 메모의 username과 contents 를 확인합니다.
     let title = $(`#${id}-editTitle`).val();
@@ -212,7 +209,6 @@ function submitEdit(id) {
     let password = $(`#${id}-editPassword`).val();
     let content = $(`#${id}-textarea`).val();
 
-    // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
     if (isValidTitle(title) == false) {
         return;
     }
@@ -229,7 +225,6 @@ function submitEdit(id) {
     // 3. 전달할 data JSON으로 만듭니다.
     let data = {'title': title, 'writer': writer, 'content': content, 'password': password};
 
-    // 4. PUT /api/memos/{id} 에 data를 전달합니다.
     $.ajax({
         type: "PUT",
         url: `/api/schedules/${id}`,
@@ -238,25 +233,36 @@ function submitEdit(id) {
         success: function (response) {
             alert('일정 변경에 성공하였습니다.');
             window.location.reload();
-        },error: function (request, status, error) {
-            if (request.status == '401') {
-                alert("비밀번호가 일치하지 않습니다.");
-            }else {
-                alert("code: " + request.status + "\n" + "error: " + error);
-            }
+        },error: err => {
+        alert(err.responseJSON.message);
         }
     });
 }
 
-// 메모를 삭제합니다.
+function submitDelete(id) {
+    $(`#${id}-submitDelete`).show();
+    $(`#${id}-editPassword`).show();
+
+    $(`#${id}-edit`).hide();
+    $(`#${id}-delete`).hide();
+}
+
 function deleteOne(id) {
-    // 1. DELETE /api/memos/{id} 에 요청해서 메모를 삭제합니다.
+    let password = $(`#${id}-editPassword`).val();
+    if (isValidPassword(password) == false) {
+        return;
+    }
+    let data = {'password': password};
     $.ajax({
         type: "DELETE",
-        url: `/api/memos/${id}`,
+        url: `/api/schedules/${id}`,
+        contentType: "application/json",
+        data: JSON.stringify(data),
         success: function (response) {
-            alert('메시지 삭제에 성공하였습니다.');
+            alert('일정 삭제에 성공하였습니다.');
             window.location.reload();
+        },error: err => {
+            alert(err.responseJSON.message);
         }
     })
 }

@@ -44,6 +44,11 @@ public class ScheduleController {
         return scheduleService.updateSchedule(id, requestDto);
     }
 
+    @DeleteMapping("/schedules/{id}")
+    public Long deleteSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
+        return scheduleService.deleteSchedule(id, requestDto);
+    }
+
     @GetMapping("/exception/test")
     public String testException() {
         throw new ScheduleException(ErrorCode.INVALID_PASSWORD);

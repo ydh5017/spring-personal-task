@@ -42,20 +42,25 @@ public class ScheduleService {
     @Transactional
     public Long updateSchedule(Long id, ScheduleRequestDto requestDto) {
         Schedule schedule = findScheduleById(id);
-
         validatePassword(schedule, requestDto);
+        schedule.update(requestDto);
 
         return schedule.getId();
     }
 
+    public Long deleteSchedule(Long id, ScheduleRequestDto requestDto) {
+        Schedule schedule = findScheduleById(id);
+        validatePassword(schedule, requestDto);
+        scheduleRepository.delete(schedule);
+        return schedule.getId();
+    }
+
     private Schedule findScheduleById(Long id) {
-        return scheduleRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("선택한 일정은 존재하지 않습니다."));
+        return scheduleRepository.findById(id).orElseThrow(()-> new ScheduleException(ErrorCode.SCHEDULE_NOT_FOUND));
     }
 
     private void validatePassword(Schedule schedule, ScheduleRequestDto requestDto) {
-        if (requestDto.getPassword().equals(schedule.getPassword())) {
-            schedule.update(requestDto);
-        }else {
+        if (!requestDto.getPassword().equals(schedule.getPassword())) {
             throw new ScheduleException(ErrorCode.INVALID_PASSWORD);
         }
     }
