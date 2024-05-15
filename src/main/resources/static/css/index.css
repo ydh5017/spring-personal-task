@@ -14,13 +14,14 @@ body {
     margin: 10px auto;
 }
 
-#contents {
+#content {
     width: 538px;
 }
 
 .area-write {
     position: relative;
     width: 538px;
+    background-color: aquamarine;
 }
 
 .area-write img {

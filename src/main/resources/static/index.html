@@ -29,12 +29,29 @@
         </p>
     </div>
     <div class="area-write">
-        <input type="text" placeholder="일정 제목을 입력해주세요" name="title" id="title">
-        <input type="text" placeholder="담당자 이름을 입력해주세요" name="writer" id="writer">
-        <input type="text" placeholder="비밀번호를 입력해주세요" name="password" id="password">
-        <textarea class="field" placeholder="일정 내용을 입력해주세요" name="content" id="content" cols="30"
-                  rows="10"></textarea>
-        <img src="images/send.png" alt="" onclick="writeSchedule()">
+
+            <input type="text" placeholder="일정 제목을 입력해주세요" name="title" id="title">
+            <input type="text" placeholder="담당자 이름을 입력해주세요" name="writer" id="writer">
+            <input type="text" placeholder="비밀번호를 입력해주세요" name="password" id="password">
+            <textarea class="field" placeholder="일정 내용을 입력해주세요" name="content" id="content" cols="30"
+                      rows="10"></textarea>
+            <tr>
+                <td colspan="3">
+                    <div class="file_list">
+                        <div>
+                            <div class="file_input">
+                                <input type="text" readonly />
+                                <label> 첨부파일
+                                    <input type="file" id="files" name="files" onchange="selectFile(this);" multiple/>
+                                </label>
+                            </div>
+                            <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
+                            <button type="button" onclick="addFile();" class="btns fn_add_btn"><span>파일 추가</span></button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <img src="images/send.png" alt="" onclick="writeSchedule()">
     </div>
     <div class="search">
         <input type="text" placeholder="키워드를 입력하세요" name="keyword" id="keyword">

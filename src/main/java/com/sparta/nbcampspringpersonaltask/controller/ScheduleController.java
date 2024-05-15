@@ -4,25 +4,31 @@ import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
 import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
 import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
+import com.sparta.nbcampspringpersonaltask.file.FileRequestDto;
+import com.sparta.nbcampspringpersonaltask.file.FileService;
+import com.sparta.nbcampspringpersonaltask.file.FileUtils;
 import com.sparta.nbcampspringpersonaltask.service.ScheduleService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-
-    public ScheduleController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
-    }
+    private final FileService fileService;
+    private final FileUtils fileUtils;
 
     @PostMapping("/schedules")
-    public ScheduleResponseDto createSchedule(@RequestBody @Valid ScheduleRequestDto requestDto) {
-        return scheduleService.createSchedule(requestDto);
+    public ScheduleResponseDto createSchedule(@Valid ScheduleRequestDto requestDto) {
+        ScheduleResponseDto responseDto = scheduleService.createSchedule(requestDto);
+        List<FileRequestDto> files = fileUtils.uploadFiles(requestDto.getFiles());
+        fileService.savaFiles(responseDto.getId(), files);
+        return responseDto;
     }
 
     @GetMapping("/schedules")
