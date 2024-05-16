@@ -15,6 +15,7 @@ function showEdits(id) {
     $(`#${id}-editWriter`).show();
     $(`#${id}-editPassword`).show();
 
+    $(`#${id}-fileBtn`).hide();
     $(`#${id}-contents`).hide();
     $(`#${id}-edit`).hide();
     $(`#${id}-title`).hide();
@@ -26,7 +27,7 @@ $(document).ready(function () {
     getSchedule();
 })
 
-
+// 일정 목록 조회
 function getSchedule() {
 
     $('#cards-box').empty();
@@ -50,6 +51,7 @@ function getSchedule() {
     })
 }
 
+// 키워드로 일정 조회
 function findByKeyword() {
     let keyword = $('#keyword').val();
 
@@ -75,6 +77,7 @@ function findByKeyword() {
     })
 }
 
+// 일정 조회 HTML
 function addHTML(id, title, content, writer, modifiedAt) {
     // 1. HTML 태그를 만듭니다.
     let tempHtml = `<div class="card">
@@ -104,6 +107,10 @@ function addHTML(id, title, content, writer, modifiedAt) {
                     </div>
                 </div>
                 <input type="text" id="${id}-editPassword" style="display: none" placeholder="비밀번호를 입력하세요.">
+                <!-- 첨부파일 영역 -->
+                <button id="${id}-fileBtn" onclick="getFileList('${id}')">첨부파일 보기</button>
+                <div id="${id}-files-box">
+                </div>
                 <!-- 버튼 영역-->
                 <div class="footer">
                     <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editSchedule('${id}')">
@@ -116,43 +123,7 @@ function addHTML(id, title, content, writer, modifiedAt) {
     $('#cards-box').append(tempHtml);
 }
 
-function writeSchedule() {
-
-    let title = $('#title').val();
-    let writer = $('#writer').val();
-    let password = $('#password').val();
-    let content = $('#content').val();
-    let files = $('#files');
-
-    let formData = new FormData();
-    let inputFile = $("input[name='files']").files;
-    for (var i=0; i<inputFile.length; i++) {
-        formData.append("files", inputFile[i]);
-    }
-    formData.append("title",title);
-    formData.append("writer",writer);
-    formData.append("password",password);
-    formData.append("content",content);
-    console.log(formData);
-
-    let data = {'title': title, 'content': content, 'writer': writer, 'password': password};
-
-    $.ajax({
-        type: "POST",
-        url: "/api/schedules",
-        contentType: false,
-        processData: false,
-        data: formData,
-        success: function (response) {
-            alert('일정이 성공적으로 작성되었습니다.');
-            window.location.reload();
-        },
-        error: err => {
-        alert(err.responseJSON.message);
-        }
-    });
-}
-
+// 일정 수정
 function submitEdit(id) {
     // 1. 작성 대상 메모의 username과 contents 를 확인합니다.
     let title = $(`#${id}-editTitle`).val();
@@ -177,14 +148,17 @@ function submitEdit(id) {
     });
 }
 
+// 일정 삭제 비밀번호 입력창 띄우기
 function submitDelete(id) {
     $(`#${id}-submitDelete`).show();
     $(`#${id}-editPassword`).show();
 
+    $(`#${id}-fileBtn`).hide();
     $(`#${id}-edit`).hide();
     $(`#${id}-delete`).hide();
 }
 
+// 일정 삭제
 function deleteOne(id) {
     let password = $(`#${id}-editPassword`).val();
 
@@ -201,6 +175,44 @@ function deleteOne(id) {
             alert(err.responseJSON.message);
         }
     })
+}
+
+// 일정 등록
+function writeSchedule() {
+
+    let title = $('#title').val();
+    let writer = $('#writer').val();
+    let password = $('#password').val();
+    let content = $('#content').val();
+
+    let formData = new FormData();
+    formData.append("title",title);
+    formData.append("writer",writer);
+    formData.append("password",password);
+    formData.append("content",content);
+
+    let fileCount = $("input[name='files']").length;
+
+    for (var i=0; i<fileCount; i++) {
+        formData.append("files", $("input[name='files']")[i].files[0]);
+    }
+
+    let data = {'title': title, 'content': content, 'writer': writer, 'password': password};
+
+    $.ajax({
+        type: "POST",
+        url: "/api/schedules",
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function (response) {
+            alert('일정이 성공적으로 작성되었습니다.');
+            window.location.reload();
+        },
+        error: err => {
+            alert(err.responseJSON.message);
+        }
+    });
 }
 
 // 파일 선택
@@ -228,10 +240,15 @@ function selectFile(element) {
     filename.value = file.name;
 }
 
+let fileCnt = 1;
+let totalCnt = 10;
 // 파일 추가
 function addFile() {
-    const fileDiv = document.createElement('div');
-    fileDiv.innerHTML =`
+    if (fileCnt >= totalCnt) {
+        alert("10개 이하의 파일만 업로드할 수 있습니다.")
+    }else {
+        const fileDiv = document.createElement('div');
+        fileDiv.innerHTML =`
             <div class="file_input">
                 <input type="text" readonly />
                 <label> 첨부파일
@@ -240,7 +257,9 @@ function addFile() {
             </div>
             <button type="button" onclick="removeFile(this);" class="btns del_btn"><span>삭제</span></button>
         `;
-    document.querySelector('.file_list').appendChild(fileDiv);
+        document.querySelector('.file_list').appendChild(fileDiv);
+        fileCnt++;
+    }
 }
 
 // 파일 삭제
@@ -252,4 +271,38 @@ function removeFile(element) {
         return false;
     }
     element.parentElement.remove();
+}
+
+// 파일 목록 조회
+function getFileList(ScheduleId) {
+    $(`#${ScheduleId}-files-box`).empty();
+
+    $.ajax({
+        type: 'GET',
+        url: '/api/files',
+        data: {"ScheduleId":ScheduleId},
+        success: function (response) {
+            for (let i = 0; i < response.length; i++) {
+                let message = response[i];
+                let id = message['id'];
+                let scheduleId = message['scheduleId'];
+                let fileName = message['fileName'];
+                let saveName = message['saveName'];
+                let size = message['size'];
+                addFileHTML(id, scheduleId, fileName, saveName, size);
+            }
+        },error: err => {
+            alert(err.responseJSON.message);
+        }
+    })
+}
+
+// 파일 목록 HTML
+function addFileHTML(id, scheduleId, fileName, saveName, size) {
+    // 1. HTML 태그를 만듭니다.
+    let tempHtml = `<div id="${id}-file">
+                                <a href="http://localhost:8080/api/files/download/${id}" onclick="">${fileName}</a>
+                            </div>`;
+    // 2. #cards-box 에 HTML을 붙인다.
+    $(`#${scheduleId}-files-box`).append(tempHtml);
 }

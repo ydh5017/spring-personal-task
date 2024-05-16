@@ -5,6 +5,7 @@ import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
 import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
 import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
+import com.sparta.nbcampspringpersonaltask.file.FileService;
 import com.sparta.nbcampspringpersonaltask.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +16,11 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final FileService fileService;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, FileService fileService) {
         this.scheduleRepository = scheduleRepository;
+        this.fileService = fileService;
     }
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
@@ -47,10 +50,12 @@ public class ScheduleService {
         return schedule.getId();
     }
 
+    @Transactional
     public Long deleteSchedule(Long id, ScheduleRequestDto requestDto) {
         Schedule schedule = findScheduleById(id);
         validatePassword(schedule, requestDto);
         scheduleRepository.delete(schedule);
+        fileService.deleteAllByScheduleId(id);
         return schedule.getId();
     }
 
