@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 파일 Entity
+ */
 @Entity
 @Getter
 @Setter

@@ -8,6 +8,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity 작성일, 수정일 자동생성 클래스
+ */
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

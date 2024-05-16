@@ -2,6 +2,9 @@ package com.sparta.nbcampspringpersonaltask.exception;
 
 import lombok.Getter;
 
+/**
+ * 일정 예외
+ */
 @Getter
 public class ScheduleException extends RuntimeException {
 

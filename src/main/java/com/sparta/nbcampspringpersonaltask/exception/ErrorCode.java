@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 예외처리 http 상태코드, 메시지 enum 클래스
+ */
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {

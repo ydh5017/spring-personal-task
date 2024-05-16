@@ -14,12 +14,12 @@ import java.util.List;
 @Setter
 public class ScheduleResponseDto {
 
-    private Long id;
-    private String title;
-    private String content;
-    private String writer;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private Long id;                    // 번호
+    private String title;               // 제목
+    private String content;             // 내용
+    private String writer;              // 담당자
+    private LocalDateTime createdAt;    // 작성일
+    private LocalDateTime modifiedAt;   // 수정일
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();

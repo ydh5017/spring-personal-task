@@ -33,6 +33,10 @@ public class Schedule extends Timestamped {
         this.password = scheduleRequestDto.getPassword();
     }
 
+    /**
+     * 일정 수정
+     * @param scheduleRequestDto 일정 요청 DTO
+     */
     public void update(ScheduleRequestDto scheduleRequestDto) {
         this.title = scheduleRequestDto.getTitle();
         this.content = scheduleRequestDto.getContent();
