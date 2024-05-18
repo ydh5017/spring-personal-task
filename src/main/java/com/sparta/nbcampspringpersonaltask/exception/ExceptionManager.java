@@ -26,7 +26,7 @@ public class ExceptionManager {
     }
 
     /**
-     * 뭐였더라
+     * Valid 애노테이션을 이용한 유효성 검사 예외처리
      * @param e MethodArgumentNotValidException
      * @return 예외 상태코드, 메시지
      */

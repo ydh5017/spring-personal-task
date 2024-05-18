@@ -3,11 +3,10 @@ package com.sparta.nbcampspringpersonaltask.service;
 import com.sparta.nbcampspringpersonaltask.Entity.Schedule;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
-import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
+import com.sparta.nbcampspringpersonaltask.enumType.ErrorCode;
 import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
-import com.sparta.nbcampspringpersonaltask.file.FileResponseDto;
-import com.sparta.nbcampspringpersonaltask.file.FileService;
-import com.sparta.nbcampspringpersonaltask.file.FileUtils;
+import com.sparta.nbcampspringpersonaltask.dto.FileResponseDto;
+import com.sparta.nbcampspringpersonaltask.utils.FileUtils;
 import com.sparta.nbcampspringpersonaltask.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,9 +67,8 @@ public class ScheduleService {
     @Transactional
     public Long updateSchedule(Long id, ScheduleRequestDto requestDto) {
         Schedule schedule = findScheduleById(id);
-        validatePassword(schedule, requestDto);
+        schedule.validatePassword(requestDto);
         schedule.update(requestDto);
-
         return schedule.getId();
     }
 
@@ -83,7 +81,7 @@ public class ScheduleService {
     @Transactional
     public Long deleteSchedule(Long id, ScheduleRequestDto requestDto) {
         Schedule schedule = findScheduleById(id);
-        validatePassword(schedule, requestDto);
+        schedule.validatePassword(requestDto);
         scheduleRepository.delete(schedule);
 
         List<FileResponseDto> files = fileService.findAllFilesByScheduleId(id); // 삭제할 파일 정보 조회
@@ -94,22 +92,11 @@ public class ScheduleService {
 
     /**
      * 일정 객체 반환 메서드
-     * @param id
+     * @param id 일정 ID
      * @return 일정 객체
      * @throws ScheduleException 일정이 존재하지 않는 경우
      */
     private Schedule findScheduleById(Long id) {
         return scheduleRepository.findById(id).orElseThrow(()-> new ScheduleException(ErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
-    /**
-     * 비밀번호 검증 메서드
-     * @param schedule 일정 객체
-     * @param requestDto 요청 DTO
-     */
-    private void validatePassword(Schedule schedule, ScheduleRequestDto requestDto) {
-        if (!requestDto.getPassword().equals(schedule.getPassword())) {
-            throw new ScheduleException(ErrorCode.INVALID_PASSWORD);
-        }
     }
 }

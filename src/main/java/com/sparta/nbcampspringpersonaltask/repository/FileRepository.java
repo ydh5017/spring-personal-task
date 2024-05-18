@@ -1,5 +1,6 @@
-package com.sparta.nbcampspringpersonaltask.file;
+package com.sparta.nbcampspringpersonaltask.repository;
 
+import com.sparta.nbcampspringpersonaltask.Entity.File;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

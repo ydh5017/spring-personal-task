@@ -1,7 +1,8 @@
 package com.sparta.nbcampspringpersonaltask.Entity;
 
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
-import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
+import com.sparta.nbcampspringpersonaltask.enumType.ErrorCode;
+import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,5 +42,15 @@ public class Schedule extends Timestamped {
         this.title = scheduleRequestDto.getTitle();
         this.content = scheduleRequestDto.getContent();
         this.writer = scheduleRequestDto.getWriter();
+    }
+
+    /**
+     * 비밀번호 검증 메서드
+     * @param requestDto 요청 DTO
+     */
+    public void validatePassword(ScheduleRequestDto requestDto) {
+        if (!requestDto.getPassword().equals(this.password)) {
+            throw new ScheduleException(ErrorCode.INVALID_PASSWORD);
+        }
     }
 }

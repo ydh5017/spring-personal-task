@@ -1,4 +1,4 @@
-package com.sparta.nbcampspringpersonaltask.exception;
+package com.sparta.nbcampspringpersonaltask.enumType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

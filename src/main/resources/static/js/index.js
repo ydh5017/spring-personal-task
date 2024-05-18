@@ -193,11 +193,13 @@ function writeSchedule() {
 
     let fileCount = $("input[name='files']").length;
 
-    for (var i=0; i<fileCount; i++) {
-        formData.append("files", $("input[name='files']")[i].files[0]);
+    if (fileCount > 0) {
+        for (var i=0; i<fileCount; i++) {
+            if ($("input[name='files']")[i].files[0] != null) {
+                formData.append("files", $("input[name='files']")[i].files[0]);
+            }
+        }
     }
-
-    let data = {'title': title, 'content': content, 'writer': writer, 'password': password};
 
     $.ajax({
         type: "POST",

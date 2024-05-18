@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 public class ScheduleRequestDto {
 
     @NotEmpty(message = "제목을 작성해주세요.")

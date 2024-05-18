@@ -1,6 +1,6 @@
-package com.sparta.nbcampspringpersonaltask.file;
+package com.sparta.nbcampspringpersonaltask.Entity;
 
-import com.sparta.nbcampspringpersonaltask.Entity.Timestamped;
+import com.sparta.nbcampspringpersonaltask.dto.FileRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

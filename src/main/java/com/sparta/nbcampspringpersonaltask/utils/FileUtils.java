@@ -1,6 +1,9 @@
-package com.sparta.nbcampspringpersonaltask.file;
+package com.sparta.nbcampspringpersonaltask.utils;
 
-import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
+import com.sparta.nbcampspringpersonaltask.dto.FileRequestDto;
+import com.sparta.nbcampspringpersonaltask.dto.FileResponseDto;
+import com.sparta.nbcampspringpersonaltask.enumType.ImgFileType;
+import com.sparta.nbcampspringpersonaltask.enumType.ErrorCode;
 import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
@@ -20,7 +23,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,9 +59,7 @@ public class FileUtils {
             return null;
         }
 
-        if (!isValidImgFile(multipartFile)) {
-            throw new ScheduleException(ErrorCode.NOT_IMGFILE);
-        }
+        validImgFile(multipartFile);
 
         String saveName = generateSaveFilename(multipartFile.getOriginalFilename());
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
@@ -117,22 +117,15 @@ public class FileUtils {
      * @param file 파일
      * @return boolean
      */
-    private boolean isValidImgFile(MultipartFile file) {
-        boolean isValid = true;
+    private void validImgFile(MultipartFile file) {
         try {
-            List<String> notValidTypeList = Arrays.asList("image/jpeg", "image/pjpeg", "image/png", "image/gif", "image/bmp", "image/x-windows-bmp");
             InputStream inputStream = file.getInputStream();
-            log.info("getContentType : " + file.getContentType());
             String mimeType = tika.detect(inputStream);
-            log.info("mimeType : " + mimeType);
 
-            isValid = notValidTypeList.stream().anyMatch(notValidType -> notValidType.equalsIgnoreCase(mimeType));
-            log.info("isValid : " + isValid);
+            ImgFileType.getImgFileType(mimeType);
         }catch (IOException e){
             log.error(e.getMessage());
-            return isValid;
         }
-        return isValid;
     }
 
     /**

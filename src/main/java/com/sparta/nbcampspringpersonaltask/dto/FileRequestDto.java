@@ -1,4 +1,4 @@
-package com.sparta.nbcampspringpersonaltask.file;
+package com.sparta.nbcampspringpersonaltask.dto;
 
 import lombok.Builder;
 import lombok.Getter;

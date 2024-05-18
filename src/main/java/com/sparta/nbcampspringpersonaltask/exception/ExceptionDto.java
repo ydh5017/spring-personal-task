@@ -1,5 +1,6 @@
 package com.sparta.nbcampspringpersonaltask.exception;
 
+import com.sparta.nbcampspringpersonaltask.enumType.ErrorCode;
 import lombok.Getter;
 
 @Getter

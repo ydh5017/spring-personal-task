@@ -1,5 +1,6 @@
-package com.sparta.nbcampspringpersonaltask.file;
+package com.sparta.nbcampspringpersonaltask.dto;
 
+import com.sparta.nbcampspringpersonaltask.Entity.File;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

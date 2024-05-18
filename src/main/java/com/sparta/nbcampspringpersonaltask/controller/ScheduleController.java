@@ -2,11 +2,9 @@ package com.sparta.nbcampspringpersonaltask.controller;
 
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
-import com.sparta.nbcampspringpersonaltask.exception.ErrorCode;
-import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
-import com.sparta.nbcampspringpersonaltask.file.FileRequestDto;
-import com.sparta.nbcampspringpersonaltask.file.FileService;
-import com.sparta.nbcampspringpersonaltask.file.FileUtils;
+import com.sparta.nbcampspringpersonaltask.dto.FileRequestDto;
+import com.sparta.nbcampspringpersonaltask.service.FileService;
+import com.sparta.nbcampspringpersonaltask.utils.FileUtils;
 import com.sparta.nbcampspringpersonaltask.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
