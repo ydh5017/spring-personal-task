@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,4 +33,13 @@ public class ScheduleRequestDto {
     private String password;
 
     private List<MultipartFile> files = new ArrayList<>();
+
+    @Builder
+    public ScheduleRequestDto(String title, String content, String writer, String password, List<MultipartFile> files) {
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+        this.password = password;
+        this.files = files;
+    }
 }

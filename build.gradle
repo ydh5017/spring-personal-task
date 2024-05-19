@@ -27,6 +27,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation group: 'org.apache.tika', name: 'tika-core', version: '1.4'
+    // google JSON
+    implementation 'com.google.code.gson:gson:2.8.7'
     // Vaild
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     // Swagger
@@ -38,6 +40,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Assertj
+    testImplementation 'org.assertj:assertj-core:3.23.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

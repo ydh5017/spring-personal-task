@@ -1,6 +1,7 @@
 package com.sparta.nbcampspringpersonaltask.dto;
 
 import com.sparta.nbcampspringpersonaltask.Entity.Schedule;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,5 +24,15 @@ public class ScheduleResponseDto {
         this.writer = schedule.getWriter();
         this.createdAt = schedule.getCreatedAt();
         this.modifiedAt = schedule.getModifiedAt();
+    }
+
+    @Builder
+    public ScheduleResponseDto(Long id, String title, String content, String writer, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 }
