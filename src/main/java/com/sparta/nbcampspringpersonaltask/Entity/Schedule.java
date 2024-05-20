@@ -4,6 +4,7 @@ import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.enumType.ErrorCode;
 import com.sparta.nbcampspringpersonaltask.exception.ScheduleException;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "schedule")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Schedule extends Timestamped {
 
     @Id

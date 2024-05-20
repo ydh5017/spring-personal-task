@@ -1,6 +1,7 @@
 package com.sparta.nbcampspringpersonaltask.service;
 
 import com.sparta.nbcampspringpersonaltask.Entity.Schedule;
+import com.sparta.nbcampspringpersonaltask.dto.FileRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleRequestDto;
 import com.sparta.nbcampspringpersonaltask.dto.ScheduleResponseDto;
 import com.sparta.nbcampspringpersonaltask.enumType.ErrorCode;
@@ -37,6 +38,11 @@ public class ScheduleService {
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
         ScheduleResponseDto responseDto = new ScheduleResponseDto(saveSchedule);
+
+        // 파일 업로드
+        List<FileRequestDto> files = fileUtils.uploadFiles(requestDto.getFiles());
+        // 파일 정보 DB에 저장
+        fileService.savaFiles(responseDto.getId(), files);
 
         return responseDto;
     }

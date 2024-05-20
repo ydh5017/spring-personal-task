@@ -18,8 +18,6 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final FileService fileService;
-    private final FileUtils fileUtils;
 
     /**
      * 일정 등록하는 메서드
@@ -28,12 +26,7 @@ public class ScheduleController {
      */
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@Valid ScheduleRequestDto requestDto) {
-        ScheduleResponseDto responseDto = scheduleService.createSchedule(requestDto);
-        // 파일 업로드
-        List<FileRequestDto> files = fileUtils.uploadFiles(requestDto.getFiles());
-        // 파일 정보 DB에 저장
-        fileService.savaFiles(responseDto.getId(), files);
-        return responseDto;
+        return scheduleService.createSchedule(requestDto);
     }
 
     /**

@@ -14,23 +14,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ScheduleControllerTest {
@@ -40,10 +37,6 @@ class ScheduleControllerTest {
 
     @Mock
     private ScheduleService scheduleService;
-    @Mock
-    private FileService fileService;
-    @Mock
-    private FileUtils fileUtils;
 
     private MockMvc mockMvc;
 
@@ -56,8 +49,8 @@ class ScheduleControllerTest {
     @Test
     void createScheduleSuccess() throws Exception {
         // given
-        ScheduleRequestDto requestDto = ScheduleRequestDto();
-        ScheduleResponseDto responseDto = ScheduleResponseDto();
+        ScheduleRequestDto requestDto = scheduleRequestDto();
+        ScheduleResponseDto responseDto = scheduleResponseDto();
 
         doReturn(responseDto)
                 .when(scheduleService)
@@ -90,7 +83,7 @@ class ScheduleControllerTest {
     @Test
     void getAllSchedulesSuccess() throws Exception {
         // given
-        doReturn(ScheduleResponseList())
+        doReturn(scheduleResponseList())
                 .when(scheduleService)
                 .findAll();
 
@@ -109,7 +102,7 @@ class ScheduleControllerTest {
     void getSchedulesByKeywordSuccess() throws Exception {
         // given
         String keyword = "test";
-        doReturn(ScheduleResponseList())
+        doReturn(scheduleResponseList())
                 .when(scheduleService)
                 .getSchedulesByKeyword(keyword);
 
@@ -123,15 +116,53 @@ class ScheduleControllerTest {
         assertThat(responseDtoList.size()).isEqualTo(5);
     }
 
+    @DisplayName("일정 수정 성공")
     @Test
-    void updateSchedule() {
+    void updateSchedule() throws Exception {
+        // given
+        ScheduleRequestDto requestDto = scheduleRequestDto();
+        Long id = 1L;
+
+        doReturn(id)
+                .when(scheduleService)
+                .updateSchedule(any(Long.class), any(ScheduleRequestDto.class));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.put("/api/schedules/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new Gson().toJson(requestDto))
+        );
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(id.toString());
     }
 
+    @DisplayName("일정 삭제 성공")
     @Test
-    void deleteSchedule() {
+    void deleteSchedule() throws Exception {
+        // given
+        Long id = 1L;
+        ScheduleRequestDto requestDto = scheduleRequestDto();
+
+        doReturn(id)
+                .when(scheduleService)
+                .deleteSchedule(any(Long.class), any(ScheduleRequestDto.class));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/schedules/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new Gson().toJson(requestDto))
+        );
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(id.toString());
     }
 
-    private ScheduleRequestDto ScheduleRequestDto() {
+    private ScheduleRequestDto scheduleRequestDto() {
         return ScheduleRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
@@ -140,7 +171,7 @@ class ScheduleControllerTest {
                 .build();
     }
 
-    private ScheduleResponseDto ScheduleResponseDto() {
+    private ScheduleResponseDto scheduleResponseDto() {
         return ScheduleResponseDto.builder()
                 .id(1L)
                 .title("testTitle")
@@ -149,7 +180,7 @@ class ScheduleControllerTest {
                 .build();
     }
 
-    private List<ScheduleResponseDto> ScheduleResponseList() {
+    private List<ScheduleResponseDto> scheduleResponseList() {
         List<ScheduleResponseDto> scheduleResponseDtoList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             scheduleResponseDtoList.add(ScheduleResponseDto.builder().id((long) i)
