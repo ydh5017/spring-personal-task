@@ -282,7 +282,7 @@ function getFileList(ScheduleId) {
     $.ajax({
         type: 'GET',
         url: '/api/files',
-        data: {"ScheduleId":ScheduleId},
+        data: {"scheduleId":scheduleId},
         success: function (response) {
             for (let i = 0; i < response.length; i++) {
                 let message = response[i];
