@@ -27,12 +27,12 @@ public class FileController {
 
     /**
      * 파일 목록 조회 메서드
-     * @param ScheduleId 일정 ID
+     * @param scheduleId 일정 ID
      * @return 파일 목록
      */
     @GetMapping
-    public List<FileResponseDto> getAllFiles(Long ScheduleId) {
-        return fileService.findAllFilesByScheduleId(ScheduleId);
+    public List<FileResponseDto> getAllFiles(Long scheduleId) {
+        return fileService.findAllFilesByScheduleId(scheduleId);
     }
 
     /**
